@@ -1,0 +1,33 @@
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build files
+[Dd]ebug/
+[Rr]elease/
+**/bin/
+**/obj/
+
+# Packages
+**/packages/
+node_modules/
+npm-debug.log
+.DS_Store
+
+# -----------------
+# HASSAS AYARLAR (ÇOK ÖNEMLİ)
+# -----------------
+# Git'in appsettings dosyalarını (özellikle yerel bağlantıları/sırları içerenleri) takip etmesini engelle
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json 
+
+# Eğer bir UserSecrets.json dosyası kullanıyorsanız (ki kullanmalısınız)
+# UserSecrets klasörünü gizle
+.secrets/
+
+# Visual Studio Code
+.vscode/

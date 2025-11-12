@@ -1,0 +1,206 @@
+﻿@model car_dealership_ASP.NET_Core_MVC.Models.CarViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+    var imageList = ViewBag.Images as List<string>;
+}
+
+<link rel="stylesheet" href="~/css/filter.css" />
+
+<div class="container">
+    <form id="filterForm" method="get" action="/Home/Filter">
+        <div class="filter">
+            <div>
+                <select class="brand" name="brandSelected">
+                    <option value="">---Select a Brand---</option>
+                    @foreach (var brand in Model.Brands)
+                    {
+                        <option value="@brand">@brand</option>
+                    }
+                </select>
+            </div>
+
+            <div>
+                <select class="model" name="modelSelected">
+                    <option value="">---Select a Model---</option>
+                </select>
+            </div>
+
+            <div>
+                <select class="gear-type" name="gearTypeSelected">
+                    <option value="">---Select a Gear Type---</option>
+                </select>
+            </div>
+
+            <div>
+                <select class="fuel-type" name="fuelTypeSelected">
+                    <option value="">---Select a Fuel Type---</option>
+                </select>
+            </div>
+
+            <div class="year">
+                <input type="number" class="year-min" name="yearMin" placeholder="Min Year" min="1980" required />
+                <input type="number" class="year-max" name="yearMax" placeholder="Max Year" min="1980" required />
+            </div>
+
+            <div class="price">
+                <input type="number" class="price-min" name="priceMin" placeholder="Min Price" min="0" required />
+                <input type="number" class="price-max" name="priceMax" placeholder="Max Price" min="0" required />
+            </div>
+
+            <button type="submit">Search</button>
+        </div>
+    </form>
+
+    <div class="slider" style="width:600px; height:400px; overflow:hidden;">
+        <img id="image" src="" style="width:100%; height:100%; object-fit:cover;" />
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // -----------SLIDER-----------
+        const ImgUrl = [
+            @foreach (var img in imageList)
+            {
+                    @: "@img",
+                  
+            }
+        ];
+
+        const imageLength = ImgUrl.length;
+        let currentIndex = 0;
+
+        if (imageLength === 0) {
+            console.error("Klasörde hiç resim bulunamadı!");
+            return;
+        }
+
+        // first pic
+        $("#image").attr("src", ImgUrl[currentIndex]);
+
+        setInterval(function() {
+            currentIndex++;
+            if (currentIndex >= imageLength) {
+                currentIndex = 0;
+            }
+
+            $("#image").fadeOut(400, function() {
+                $("#image").attr("src", ImgUrl[currentIndex]).fadeIn(400);
+            });
+        }, 2000);
+
+        // ---------FILTER--------------
+        const brand = $(".brand");
+        const model = $(".model");
+        const gearType=$(".gear-type");
+
+        // ----------GET MODELS---------
+        brand.on("change", function () {
+            const brandSelected = $(this).val();
+
+            if (brandSelected) {
+                $.ajax({
+                    url: "/Home/GetModelsByBrand",
+                    type: "GET",
+                    data: { brandSelected: brandSelected },
+                    success: function (models) {
+                        model.empty();
+                        model.append(`<option value="">---Select a Model---</option>`);
+
+                        $.each(models, function (i, mod) {
+                            model.append(`<option value="${mod}">${mod}</option>`);
+                        });
+                    },
+                    error: function () {
+                        alert("An error occurred while loading models!");
+                    }
+                });
+            } else {
+                model.empty();
+                model.append(`<option value="">---Select a Model---</option>`);
+            }
+        });
+
+        // --------GET GEAR TYPES-------------
+        model.on("change",function(){
+            const brandSelected=$(".brand").val();
+            const modelSelected=$(this).val();
+            const gearType=$(".gear-type");
+
+             if (modelSelected && brandSelected) {
+                $.ajax({
+                    url: "/Home/GetGearTypesByModelBrand",
+                    type: "GET",
+                    data: { brandSelected: brandSelected, modelSelected: modelSelected },
+                    success: function (gearTypes) {
+                        gearType.empty().append(`<option value="">---Select a Gear Type---</option>`);
+                        $.each(gearTypes, function (i, gt) {
+                            gearType.append(`<option value="${gt}">${gt}</option>`);
+                        });
+                    },
+                    error: function () {
+                        alert("An error occurred while loading gear types!");
+                    }
+                });
+            } else {
+                gearType.empty().append(`<option value="">---Select a Gear Type---</option>`);
+            }
+        });
+
+        // ---------GET FUEL TYPES---------------
+        gearType.on("change", function () {
+            const brandSelected = $(".brand").val();
+            const modelSelected = $(".model").val();
+            const gearTypeSelected = $(this).val();
+
+            if (brandSelected && modelSelected && gearTypeSelected) {
+                $.ajax({
+                    url: "/Home/GetFuelTypesByBrandModelGearType",
+                    type: "GET",
+                    data: {
+                        brandSelected: brandSelected,
+                        modelSelected: modelSelected,
+                        gearTypeSelected: gearTypeSelected
+                    },
+                    success: function (fuelTypes) {
+                        const fuelTypeDropdown = $(".fuel-type");
+                        fuelTypeDropdown.empty().append(`<option value="">---Select a Fuel Type---</option>`);
+                        $.each(fuelTypes, function (i, ft) {
+                            fuelTypeDropdown.append(`<option value="${ft}">${ft}</option>`);
+                        });
+                    },
+                    error: function () {
+                        alert("An error occurred while loading fuel types!");
+                    }
+                });
+            } else {
+                $(".fuel-type").empty().append(`<option value="">---Select a Fuel Type---</option>`);
+            }
+        });
+
+        // -----------YEAR OPTIONS-----------
+        $(".year-min, .year-max").on("change", function () {
+            const minYear = parseInt($(".year-min").val());
+            const maxYear = parseInt($(".year-max").val());
+            const currentYear = new Date().getFullYear();
+
+            if (minYear && minYear < 1980) {
+                $(".year-min").val(1980);
+            }
+            if (maxYear && maxYear > currentYear) {
+                $(".year-max").val(currentYear);
+            }
+            if (minYear && maxYear && minYear > maxYear) {
+                alert("Min year cannot be greater than max year!");
+                $(".year-max").val(minYear);
+            }
+        });
+
+
+
+    });
+</script>

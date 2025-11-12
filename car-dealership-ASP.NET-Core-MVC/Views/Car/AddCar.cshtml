@@ -1,0 +1,69 @@
+﻿@model car_dealership_ASP.NET_Core_MVC.Models.CarViewModel
+
+<h2>Yeni Araç Ekle</h2>
+
+<form asp-action="AddCar" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group mb-2">
+        <label>Brand</label>
+        <input asp-for="CarVMAdd.Brand" class="form-control" />
+        <span asp-validation-for="CarVMAdd.Brand" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Model</label>
+        <input asp-for="CarVMAdd.Model" class="form-control" />
+        <span asp-validation-for="CarVMAdd.Model" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Gear Type</label>
+        <select asp-for="CarVMAdd.GearType" class="form-control">
+            <option value="">--- Select Gear Type ---</option>
+            <option>Manual</option>
+            <option>Automatic</option>
+        </select>
+        <span asp-validation-for="CarVMAdd.GearType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Fuel Type</label>
+        <select asp-for="CarVMAdd.FuelType" class="form-control">
+            <option value="">--- Select Fuel Type ---</option>
+            <option>Gasoline</option>
+            <option>Diesel</option>
+            <option>Electric</option>
+            <option>Hybrid</option>
+        </select>
+        <span asp-validation-for="CarVMAdd.FuelType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Year</label>
+        <input asp-for="CarVMAdd.Year" class="form-control" />
+        <span asp-validation-for="CarVMAdd.Year" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Color</label>
+        <input asp-for="CarVMAdd.Color" class="form-control" />
+        <span asp-validation-for="CarVMAdd.Color" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Price</label>
+        <input asp-for="CarVMAdd.Price" class="form-control" />
+        <span asp-validation-for="CarVMAdd.Price" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Car Images</label>
+        <input asp-for="CarImages" type="file" multiple class="form-control" />
+        <span asp-validation-for="CarImages" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Add Car</button>
+</form>
+
+
