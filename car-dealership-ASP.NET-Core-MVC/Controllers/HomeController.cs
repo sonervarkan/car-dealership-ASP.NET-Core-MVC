@@ -11,8 +11,8 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IWebHostEnvironment _env; // EKLENDÝ
-        private readonly CarDealershipDbContext _context; // EKLENDI
+        private readonly IWebHostEnvironment _env;
+        private readonly CarDealershipDbContext _context;
 
         public HomeController(ILogger<HomeController> logger, IWebHostEnvironment env, CarDealershipDbContext context)
         {
@@ -23,10 +23,10 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
 
         public IActionResult Index()
         {
-            // wwwroot/images/cars klasörünün tam yolu
+            // wwwroot/images/cars
             string folderPath = Path.Combine(_env.WebRootPath, "images", "cars");
 
-            // Klasördeki jpg/png dosyalarýný al
+            // Take jpg/jpeg/PNG files
             var imageFiles = Directory.Exists(folderPath)
                 ? Directory.GetFiles(folderPath, "*.*")
                     .Where(f => f.EndsWith(".jpg") || f.EndsWith(".jpeg") || f.EndsWith(".PNG"))
@@ -136,7 +136,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
 
             ViewBag.FilteredCars = filteredCars;
 
-            // ViewModel oluþturup markalarý da tekrar doldurmak faydalý olur
+
             var vm = new CarViewModel
             {
                 Brands = _context.Cars.Select(c => c.Brand).Distinct().ToList()

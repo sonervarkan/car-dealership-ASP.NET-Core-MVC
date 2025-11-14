@@ -47,14 +47,14 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Hata ayıklayıcı ile burayı kontrol edin!
+                    
                     ViewBag.ErrorMessage = "An error occurred during registration: " + ex.Message;
-                    // VEYA daha iyisi:
+                    
                     ModelState.AddModelError("", "An error occurred during registration. Please check your information.");
                 }
             }
 
-            // Form yeniden yüklendiğinde roller tekrar alınmalı
+           
             model.Roles = _context.Roles.ToList();
             return View(model);
         }
@@ -84,7 +84,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                 return View();
             }
 
-            // Giriş başarılı
+            
             HttpContext.Session.SetString("UserName", user.Name);
             HttpContext.Session.SetInt32("UserId", user.Id);
 

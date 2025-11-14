@@ -1,4 +1,5 @@
 using car_dealership_ASP.NET_Core_MVC.Data;
+using car_dealership_ASP.NET_Core_MVC.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Session icin
+// Save to Cloudinary to the project as Singleton, Scoped or Transient
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
+
+// for Session 
 builder.Services.AddSession();
 
 var connectionString = builder.Configuration["DefaultConnection"];

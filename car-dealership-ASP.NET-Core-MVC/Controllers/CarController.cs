@@ -1,24 +1,32 @@
 ﻿using car_dealership_ASP.NET_Core_MVC.Data;
 using car_dealership_ASP.NET_Core_MVC.Models;
 using car_dealership_ASP.NET_Core_MVC.Models.Entities;
+using car_dealership_ASP.NET_Core_MVC.Services; 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http; // For Session 
+using System.IO; // For Path 
 
 namespace car_dealership_ASP.NET_Core_MVC.Controllers
 {
     public class CarController : Controller
     {
         private readonly CarDealershipDbContext _context;
-        private readonly IWebHostEnvironment _env;
 
-        public CarController(CarDealershipDbContext context, IWebHostEnvironment env)
+        // private readonly IWebHostEnvironment _env; // Now it is unnecessary
+
+        private readonly ICloudinaryService _cloudinaryService; 
+
+        
+        public CarController(CarDealershipDbContext context, ICloudinaryService cloudinaryService)
         {
             _context = context;
-            _env = env;
+            _cloudinaryService = cloudinaryService; 
+            // _env removed
         }
-        
+
         public IActionResult Index()
         {
-           return View();
+            return View();
         }
 
         [HttpGet]
@@ -28,7 +36,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddCar(CarViewModel model)
+        public async Task<IActionResult> AddCar(CarViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -42,7 +50,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                     return View(model);
                 }
 
-                // Cars tablosu
+                // 1. Cars table
                 var newCar = new Cars
                 {
                     Brand = model.CarVMAdd.Brand,
@@ -56,52 +64,57 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                 };
 
                 _context.Cars.Add(newCar);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-                // Images tablosuna ImgUrl ve wwwroot klasörüne resim kaydetme
+                // 2. saving Cloudinary URL to Images table
                 if (model.CarImages != null && model.CarImages.Count > 0)
                 {
-                    string uploadPath = Path.Combine(_env.WebRootPath, "images", "cars"); // wwwroot/images/cars/ oluşturacak
-
-                    // klasör yoksa oluştur
-                    if (!Directory.Exists(uploadPath))
-                        Directory.CreateDirectory(uploadPath);
+                    // wwwroot koding is removed
 
                     foreach (var image in model.CarImages)
                     {
                         if (image.Length > 0)
                         {
-                            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                            string filePath = Path.Combine(uploadPath, uniqueFileName);
+                            // CLOUDINARY INSTALLATION PROCESS
+                            var uploadResult = await _cloudinaryService.UploadImageAsync(image);
 
-                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            // if success
+                            if (uploadResult != null && uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
                             {
-                                image.CopyTo(fileStream);
+                                var imgEntity = new Images
+                                {
+                                    
+                                    ImgUrl = uploadResult.SecureUrl.ToString(),
+                                    PublicId = uploadResult.PublicId, // keep the PublicId in case the image is deleted
+                                    CarId = newCar.Id
+                                };
+
+                                _context.Images.Add(imgEntity);
                             }
-
-                            // Veritabanına kaydet
-                            var imgEntity = new Images
+                            else
                             {
-                                ImgUrl = "/images/cars/" + uniqueFileName,
-                                CarId = newCar.Id
-                            };
+                                
+                                ModelState.AddModelError("", $"Image could not be loaded: {uploadResult?.Error?.Message ?? "unknown error"}");
 
-                            _context.Images.Add(imgEntity);
+                                // If you need to delete your Car record in case of an error
+                                // _context.Cars.Remove(newCar);
+                                // await _context.SaveChangesAsync();
+
+                                return View(model);
+                            }
                         }
                     }
 
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
 
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Hata oluştu: " + ex.Message);
+                ModelState.AddModelError("", "An error occurred: " + ex.Message);
                 return View(model);
             }
         }
-
-
     }
 }
