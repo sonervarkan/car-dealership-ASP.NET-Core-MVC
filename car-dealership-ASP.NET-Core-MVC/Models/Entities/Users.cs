@@ -24,8 +24,8 @@ namespace car_dealership_ASP.NET_Core_MVC.Models.Entities
         public string Password { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Bir rol seçimi zorunludur.")]
-        public int? RoleId { get; set; } // ? (nullable) olmazsa işlem yapmıyor
-        public Roles? Role { get; set; } // ? (nullable) olmazsa işlem yapmıyor
+        public int? RoleId { get; set; }
+        public Roles? Role { get; set; }
 
         public ICollection<Cars> Cars { get; set; } = new List<Cars>();
     }
