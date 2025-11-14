@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Session icin
+// Session
 builder.Services.AddSession();
 
 var connectionString = builder.Configuration["DefaultConnection"];
@@ -28,7 +28,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-// SESSION ICIN (app.UseRouting() ile app.UseAuthorization()’ýn tam arasýnda olmalý.)
+// SESSION ICIN (app.UseRouting() ile app.UseAuthorization()â€™Ã½n tam arasÃ½nda olmalÃ½.)
 app.UseSession();
 
 app.UseAuthorization();
