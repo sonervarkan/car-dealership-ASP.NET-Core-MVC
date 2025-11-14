@@ -1,4 +1,4 @@
-﻿/* Genel görünüm */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f3f4f6;
@@ -6,7 +6,7 @@ body {
     padding: 40px;
 }
 
-/* Ana container - filtre ve slider yan yana */
+
 .container {
     display: flex;
     gap: 40px;
@@ -14,7 +14,7 @@ body {
     justify-content: center;
 }
 
-/* Filtre kutusu */
+
 .filter {
     background: #ffffff;
     padding: 25px 30px;
@@ -47,13 +47,13 @@ body {
             outline: none;
         }
 
-    /* Year ve Price alanları */
+ 
     .filter .year,
     .filter .price {
         margin-bottom: 15px;
     }
 
-/* Year inputları - Price ile aynı stil */
+
 .year input {
     width: 48%;
     padding: 10px;
@@ -71,7 +71,7 @@ body {
         outline: none;
     }
 
-/* Price inputs */
+
 .price input {
     width: 48%;
     padding: 10px;
@@ -88,7 +88,7 @@ body {
         outline: none;
     }
 
-/* Search butonu */
+
 .search-btn {
     width: 100%;
     background-color: #2563eb;
@@ -107,7 +107,7 @@ body {
     }
 
 
-/* Slider kısmı */
+
 .slider {
     width: 600px;
     height: 400px;
@@ -126,13 +126,13 @@ body {
         border-radius: 16px;
     }
 
-    /* Hover efekt */
+    
     .slider:hover {
         transform: scale(1.02);
         transition: transform 0.3s ease;
     }
 
-/* Responsive yapı */
+
 @media (max-width: 900px) {
     .container {
         align-items: center;
