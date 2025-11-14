@@ -58,12 +58,12 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                 _context.Cars.Add(newCar);
                 _context.SaveChanges();
 
-                // Images tablosuna ImgUrl ve wwwroot klasörüne resim kaydetme
+                // Saving images to the Img Url and wwwroot folders in the Images table
                 if (model.CarImages != null && model.CarImages.Count > 0)
                 {
-                    string uploadPath = Path.Combine(_env.WebRootPath, "images", "cars"); // wwwroot/images/cars/ oluşturacak
+                    string uploadPath = Path.Combine(_env.WebRootPath, "images", "cars");
 
-                    // klasör yoksa oluştur
+                   
                     if (!Directory.Exists(uploadPath))
                         Directory.CreateDirectory(uploadPath);
 
@@ -79,7 +79,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
                                 image.CopyTo(fileStream);
                             }
 
-                            // Veritabanına kaydet
+                         
                             var imgEntity = new Images
                             {
                                 ImgUrl = "/images/cars/" + uniqueFileName,
@@ -97,7 +97,7 @@ namespace car_dealership_ASP.NET_Core_MVC.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", "Hata oluştu: " + ex.Message);
+                ModelState.AddModelError("", "An error occured: " + ex.Message);
                 return View(model);
             }
         }
