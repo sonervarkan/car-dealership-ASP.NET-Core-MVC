@@ -1,20 +1,20 @@
 ﻿@model car_dealership_ASP.NET_Core_MVC.Models.CarViewModel
 
 
-<h2>Filtre Sonuçları</h2>
+<h2>Filter Page</h2>
 
 @if (ViewBag.FilteredCars != null && ViewBag.FilteredCars.Count > 0)
 {
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Resim</th>
-                <th>Marka</th>
+                <th>Image</th>
+                <th>Brand</th>
                 <th>Model</th>
-                <th>Yıl</th>
-                <th>Vites</th>
-                <th>Yakıt</th>
-                <th>Fiyat</th>
+                <th>Year</th>
+                <th>Gear Type</th>
+                <th>Fuel Type</th>
+                <th>Price</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
                         }
                         else
                         {
-                            <span>Resim Yok</span>
+                            <span>No image</span>
                         }
                     </td>
                     <td>@car.Brand</td>
@@ -47,5 +47,5 @@
 }
 else
 {
-    <p>Sonuç bulunamadı.</p>
+    <p>No results found.</p>
 }
